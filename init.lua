@@ -137,8 +137,8 @@ vim.opt.timeoutlen = 300
 -- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-
 -- Sets how neovim will display certain whitespace characters in the editor.
+-- help
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
@@ -187,8 +187,8 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- set <C-tab> to navigate through buffers
-vim.keymap.set('n', '<C-tab>', '<cmd>BufferNext<CR>', { desc = 'Move to [N]ext buffer' })
-vim.keymap.set('n', '<C-S-tab>', '<cmd>BufferPrevious<CR>', { desc = 'Move to [P]revious buffer' })
+vim.keymap.set('n', '<C-tab>', '<cmd>bnext<CR>', { desc = 'Move to [N]ext buffer' })
+vim.keymap.set('n', '<C-S-tab>', '<cmd>bprev<CR>', { desc = 'Move to [P]revious buffer' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -920,9 +920,10 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.remote-nvim',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
