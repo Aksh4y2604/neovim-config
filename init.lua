@@ -189,6 +189,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- set <C-tab> to navigate through buffers
 vim.keymap.set('n', '<C-tab>', '<cmd>bnext<CR>', { desc = 'Move to [N]ext buffer' })
 vim.keymap.set('n', '<C-S-tab>', '<cmd>bprev<CR>', { desc = 'Move to [P]revious buffer' })
+vim.keymap.set('n', '<S-tab>', '<cmd>Explore<CR>', { desc = 'Change to the file explorer' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -247,6 +248,22 @@ require('lazy').setup({
       { '<leader>hn', "<cmd>lua require('harpoon.ui').nav_next()<cr>", desc = 'Go to next harpoon mark' },
       { '<leader>hp', "<cmd>lua require('harpoon.ui').nav_prev()<cr>", desc = 'Go to previous harpoon mark' },
       { '<leader>ha', "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", desc = 'Show harpoon marks' },
+    },
+  },
+
+  {
+    'sindrets/diffview.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' }, -- make sure plenary.nvim is installed
+    config = function()
+      -- Configuration settings go here, if needed
+    end,
+  },
+  {
+    'nosduco/remote-sshfs.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+    opts = {
+      -- Refer to the configuration section below
+      -- or leave empty for defaults
     },
   },
   -- Here is a more advanced example where we pass configuration
@@ -327,12 +344,45 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
+  {
+    'debugloop/telescope-undo.nvim',
+    dependencies = { -- note how they're inverted to above example
+      {
+        'nvim-telescope/telescope.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+      },
+    },
+    keys = {
+      { -- lazy style key map
+        '<leader>u',
+        '<cmd>Telescope undo<cr>',
+        desc = 'undo history',
+      },
+    },
+    opts = {
+      -- don't use `defaults = { }` here, do this in the main telescope spec
+      extensions = {
+        undo = {
+          -- telescope-undo.nvim config, see below
+        },
+        -- no other extensions here, they can have their own spec too
+      },
+    },
+    config = function(_, opts)
+      -- Calling telescope's setup from multiple specs does not hurt, it will happily merge the
+      -- configs for us. We won't use data, as everything is in it's own namespace (telescope
+      -- defaults, as well as each extension).
+      require('telescope').setup(opts)
+      require('telescope').load_extension 'undo'
+    end,
+  },
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
+
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
@@ -868,15 +918,15 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-  {
-
-    'nvim-tree/nvim-tree.lua',
-    config = function()
-      require('nvim-tree').setup()
-      vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
-    end,
-  },
-
+  -- {
+  --
+  --   'nvim-tree/nvim-tree.lua',
+  --   config = function()
+  --     require('nvim-tree').setup()
+  --     vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
+  --   end,
+  -- },
+  --
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -920,10 +970,9 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.remote-nvim',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
